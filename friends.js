@@ -21,13 +21,13 @@ async function showFriends() {
 
 // ===== ПОИСК =====
 async function searchFriend() {
-    const input = (document.getElementById('friends-search-input').value || '').trim();
+    const input = (document.getElementById('friends-search-input').value || '').trim().toLowerCase();
     if (!input) return;
 
     const resultsEl = document.getElementById('friends-search-results');
     resultsEl.innerHTML = '<p class="friends-empty">Поиск...</p>';
 
-    const snap = await db.ref('users').orderByChild('name').equalTo(input).get();
+    const snap = await db.ref('users').get();
 
     if (!snap.exists()) {
         resultsEl.innerHTML = '<p class="friends-empty">Игрок не найден</p>';
@@ -36,7 +36,10 @@ async function searchFriend() {
 
     const myUid = getMyUid();
     const results = [];
-    snap.forEach(c => { const u = c.val(); if (u.uid !== myUid) results.push(u); });
+    snap.forEach(c => {
+        const u = c.val();
+        if (u.uid !== myUid && u.name && u.name.toLowerCase().includes(input)) results.push(u);
+    });
 
     if (results.length === 0) {
         resultsEl.innerHTML = '<p class="friends-empty">Игрок не найден</p>';
