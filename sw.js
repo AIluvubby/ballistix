@@ -1,4 +1,4 @@
-const CACHE = 'ballistix-v22';
+const CACHE = 'ballistix-v24';
 const ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {

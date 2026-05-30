@@ -51,7 +51,8 @@ let keys = {};
 let prevPlayerX = [0.5, 0.5, 0, 1];
 let prevPlayerY = [1, 0, 0.5, 0.5];
 let neonHue = 0;
-let touchX = null;
+let touchPaddlePos = null;  // позиция вдоль стены (0-1)
+let touchPushActive = false; // палец сдвинут к центру = выдвижной удар
 let touchSuperQueued = false;
 let touchSuperFired = false;
 let streakMessage = null;
@@ -239,35 +240,33 @@ document.addEventListener("keyup", e => { keys[e.key] = false; });
 // Сенсорное управление — касание двигает клюшку, вход в зону суперудара активирует его
 canvas.addEventListener("touchstart", handleTouch, { passive: false });
 canvas.addEventListener("touchmove", handleTouch, { passive: false });
-canvas.addEventListener("touchend", () => { touchX = null; touchSuperFired = false; }, { passive: false });
+canvas.addEventListener("touchend", () => {
+    touchPaddlePos = null;
+    touchPushActive = false;
+    touchSuperFired = false;
+}, { passive: false });
 
 function handleTouch(e) {
     e.preventDefault();
     const touch = e.touches[0];
     if (!touch) return;
 
-    touchX = Math.max(0, Math.min(1, (touch.clientX - OFFSET_X) / ARENA));
+    const tx = touch.clientX;
+    const ty = touch.clientY;
+    const PUSH_THRESHOLD = 55; // px вглубь арены чтобы активировать выдвижной удар
 
-    if (!touchSuperFired && gameRunning && players) {
-        const p = players[localPlayerIndex];
-        if (p && p.alive && p.superTimer <= 0) {
-            const cx = OFFSET_X + p.x * ARENA;
-            const cy = OFFSET_Y + p.y * ARENA;
-            const rW = PADDLE_R * getPaddleScale(p) * ARENA;
-            const horiz = localPlayerSide === "bottom" || localPlayerSide === "top";
-            const ex = (horiz ? rW : JOYSTICK_DEPTH) + SUPER_ZONE;
-            const ey = (horiz ? JOYSTICK_DEPTH : rW) + SUPER_ZONE;
-            const tbpx = touch.clientX - cx;
-            const tbpy = touch.clientY - cy;
-            const inHalf = (localPlayerSide === "bottom" && tbpy <= 0) ||
-                           (localPlayerSide === "top"    && tbpy >= 0) ||
-                           (localPlayerSide === "left"   && tbpx >= 0) ||
-                           (localPlayerSide === "right"  && tbpx <= 0);
-            if ((tbpx / ex) ** 2 + (tbpy / ey) ** 2 <= 1 && inHalf) {
-                touchSuperQueued = true;
-                touchSuperFired = true;
-            }
-        }
+    if (localPlayerSide === "bottom") {
+        touchPaddlePos = Math.max(0, Math.min(1, (tx - OFFSET_X) / ARENA));
+        touchPushActive = (OFFSET_Y + ARENA - ty) > PUSH_THRESHOLD;
+    } else if (localPlayerSide === "top") {
+        touchPaddlePos = Math.max(0, Math.min(1, (tx - OFFSET_X) / ARENA));
+        touchPushActive = (ty - OFFSET_Y) > PUSH_THRESHOLD;
+    } else if (localPlayerSide === "left") {
+        touchPaddlePos = Math.max(0, Math.min(1, (ty - OFFSET_Y) / ARENA));
+        touchPushActive = (tx - OFFSET_X) > PUSH_THRESHOLD;
+    } else if (localPlayerSide === "right") {
+        touchPaddlePos = Math.max(0, Math.min(1, (ty - OFFSET_Y) / ARENA));
+        touchPushActive = (OFFSET_X + ARENA - tx) > PUSH_THRESHOLD;
     }
 }
 
@@ -279,27 +278,27 @@ function handleInput(dt = 1) {
     const scaledR = PADDLE_R * getPaddleScale(p);
     const left  = keys["a"] || keys["A"] || keys["ArrowLeft"];
     const right = keys["d"] || keys["D"] || keys["ArrowRight"];
-    const pushFwd = keys["w"] || keys["W"] || keys["ArrowUp"];
+    const pushFwd = keys["w"] || keys["W"] || keys["ArrowUp"] || touchPushActive;
 
     if (localPlayerSide === "bottom") {
         if (left)  p.x -= spd;
         if (right) p.x += spd;
-        if (touchX !== null) p.x = touchX;
+        if (touchPaddlePos !== null) p.x = touchPaddlePos;
         p.x = Math.max(CORNER_ZONE + scaledR, Math.min(1 - CORNER_ZONE - scaledR, p.x));
     } else if (localPlayerSide === "top") {
         if (left)  p.x += spd;
         if (right) p.x -= spd;
-        if (touchX !== null) p.x = 1 - touchX;
+        if (touchPaddlePos !== null) p.x = 1 - touchPaddlePos;
         p.x = Math.max(CORNER_ZONE + scaledR, Math.min(1 - CORNER_ZONE - scaledR, p.x));
     } else if (localPlayerSide === "left") {
         if (left)  p.y -= spd;
         if (right) p.y += spd;
-        if (touchX !== null) p.y = touchX;
+        if (touchPaddlePos !== null) p.y = touchPaddlePos;
         p.y = Math.max(CORNER_ZONE + scaledR, Math.min(1 - CORNER_ZONE - scaledR, p.y));
     } else if (localPlayerSide === "right") {
         if (left)  p.y += spd;
         if (right) p.y -= spd;
-        if (touchX !== null) p.y = 1 - touchX;
+        if (touchPaddlePos !== null) p.y = 1 - touchPaddlePos;
         p.y = Math.max(CORNER_ZONE + scaledR, Math.min(1 - CORNER_ZONE - scaledR, p.y));
     }
 
@@ -1409,23 +1408,6 @@ function drawSuperIndicator() {
             ctx.restore();
         }
 
-        // Звёзды — всегда, каждая со своим свечением
-        const n = Math.min(p.streakCount, 3);
-        const size = Math.min(rD * 0.62, rW * 0.27);
-        const spacing = size * 1.18;
-        const baseCx = p.side === "right" ? cx - rD/2 : p.side === "left" ? cx + rD/2 : cx;
-        const baseCy = p.side === "bottom" ? cy - rD/2 : p.side === "top" ? cy + rD/2 : cy;
-        ctx.font = `bold ${size}px Segoe UI`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        for (let k = 0; k < 3; k++) {
-            const offset = (k - 1) * spacing;
-            const sx = horiz ? baseCx + offset : baseCx;
-            const sy = horiz ? baseCy : baseCy + offset;
-            const lit = k < n;
-            ctx.fillStyle = lit ? p.color : "rgba(180,165,148,0.45)";
-            ctx.fillText(lit ? "★" : "☆", sx, sy);
-        }
     });
 }
 

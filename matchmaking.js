@@ -26,7 +26,7 @@ async function loadUserProfile() {
 
 function updateRatingDisplay() {
     const el = document.getElementById('home-rating');
-    if (el && userProfile) el.textContent = `⭐ ${userProfile.rating} MMR`;
+    if (el && userProfile) el.textContent = `${userProfile.rating} MMR`;
 }
 
 // ===== ПОИСК МАТЧА =====
@@ -166,7 +166,7 @@ function renderMMPlayers(players) {
     el.innerHTML = players.slice(0, 4).map((p, i) => `
         <div class="mm-player">
             <span>${slots[i]} ${escHtml(p.name)}</span>
-            <span class="mm-player-rating">⭐ ${p.rating}</span>
+            <span class="mm-player-rating">${p.rating}</span>
         </div>
     `).join('') + Array(Math.max(0, 4 - players.length)).fill('<div class="mm-player mm-empty">Ожидание...</div>').join('');
 }
@@ -237,7 +237,7 @@ async function showLeaderboard() {
             <div class="lb-row ${u.uid === getMyUid() ? 'lb-me' : ''}">
                 <span class="lb-rank">${medals[i] || `#${i+1}`}</span>
                 <span class="lb-name">${escHtml(u.name || 'Игрок')}</span>
-                <span class="lb-rating">⭐ ${u.rating || INITIAL_RATING}</span>
+                <span class="lb-rating">${u.rating || INITIAL_RATING}</span>
                 <span class="lb-record">${u.wins || 0}П / ${u.losses || 0}П</span>
             </div>`).join('');
 }
