@@ -192,7 +192,7 @@ function initGame() {
         { x: 1.0, y: 0.5, vx: 0, vy: 0, side: "right",  alive: true, isBot: true,  color: COLORS[3], skill: 0.82, superTimer: 0, streakCount: 0, ...base },
     ];
     snitch = null;
-    snitchSpawnCountdown = 20;
+    snitchSpawnCountdown = 60;
 
     if (gameMode === "2v2") {
         players[0].color = players[1].color = "#5B9BD5";
@@ -1199,27 +1199,24 @@ function updateSnitch(dt) {
 
 function checkSnitchCollision() {
     if (!snitch) return;
-    players.forEach((p, i) => {
-        if (!p.alive || !snitch) return;
-        const pos = getPaddlePos(p);
-        const dx = snitch.x - pos.x;
-        const dy = snitch.y - pos.y;
-        const horiz = p.side === "top" || p.side === "bottom";
-        const depth = JOYSTICK_DEPTH / ARENA;
-        const scaledR = PADDLE_R * getPaddleScale(p);
-        const ex = (horiz ? scaledR : depth) + snitch.r;
-        const ey = (horiz ? depth : scaledR) + snitch.r;
-        if ((dx/ex)**2 + (dy/ey)**2 <= 1) {
+    const dx = ball.x - snitch.x;
+    const dy = ball.y - snitch.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < ball.r + snitch.r) {
+        const pi = ball.lastTouched;
+        if (pi !== null && players[pi] && players[pi].alive) {
+            const p = players[pi];
             p.hasMagnet = true;
-            p.magnetTimer = 60;
+            p.magnetTimer = 30;
             p.magnetActive = false;
-            p.magnetHoldTime = 0;
-            snitch = null;
-            snitchSpawnCountdown = 25;
-            const who = (i === localPlayerIndex) ? "ТЫ ПОЙМАЛ" : (NAMES[i] + " ПОЙМАЛ");
+            const who = (pi === localPlayerIndex) ? "ТЫ ПОЙМАЛ" : (NAMES[pi] + " ПОЙМАЛ");
             goalMessage = { text: `✨ ${who} МУХУ!`, color: "#ffd700", alpha: 1, timer: 100 };
+        } else {
+            goalMessage = { text: `✨ МУХА УЛЕТЕЛА!`, color: "#ffd700", alpha: 1, timer: 100 };
         }
-    });
+        snitch = null;
+        snitchSpawnCountdown = 60;
+    }
 }
 
 function drawSnitch() {
@@ -1478,7 +1475,7 @@ function gameLoop(timestamp) {
                     dirTimer: 0,
                     flutter: 0
                 };
-                snitchSpawnCountdown = 25;
+                snitchSpawnCountdown = 60;
             }
         }
         updateSnitch(dt);

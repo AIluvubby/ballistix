@@ -68,6 +68,7 @@ function showMultiError(msg) {
 function openMulti() {
     if (!initFirebase()) return;
     // Автоподставляем имя из аккаунта
+    if (window.myName) myName = window.myName;
     const nameInput = document.getElementById("input-name");
     if (nameInput && myName) nameInput.value = myName;
     showScreen("screen-multi");
