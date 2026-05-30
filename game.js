@@ -8,7 +8,7 @@ let tmpCanvas = null, tmpCtx = null;
 function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    ARENA = Math.min(W * 1.0, H * 1.0) - 12;
+    ARENA = Math.min(W * 1.0, H * 1.0, 700) - 12;
     OFFSET_X = (W - ARENA) / 2;
     OFFSET_Y = (H - ARENA) / 2;             // центрируем по вертикали
     tmpCanvas = document.createElement('canvas');
