@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ballistix">
+    <meta name="theme-color" content="#0a0a1a">
+    <link rel="manifest" href="manifest.json">
+    <title>Ballistix</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ЭКРАН АВТОРИЗАЦИИ -->
+    <div id="screen-auth" class="screen active">
+        <div class="auth-card">
+            <div class="logo" style="font-size:54px">🏒</div>
+            <h1 class="title" style="font-size:46px">BALLISTIX</h1>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="authTab('login')">Войти</button>
+                <button class="auth-tab" id="tab-register" onclick="authTab('register')">Регистрация</button>
+            </div>
+
+            <div id="form-login" class="auth-form">
+                <label class="field-label">Email</label>
+                <input id="auth-login-email" class="text-input" type="email" placeholder="your@email.com" />
+                <label class="field-label">Пароль</label>
+                <input id="auth-login-pass" class="text-input" type="password" placeholder="••••••••" />
+                <button class="btn-start" style="width:100%" onclick="authLogin()">▶ Войти</button>
+                <button class="auth-resend" onclick="authResend()">Выслать письмо повторно</button>
+            </div>
+
+            <div id="form-register" class="auth-form" style="display:none">
+                <label class="field-label">Имя игрока</label>
+                <input id="auth-reg-name" class="text-input" type="text" maxlength="16" placeholder="Введите имя..." />
+                <label class="field-label">Email</label>
+                <input id="auth-reg-email" class="text-input" type="email" placeholder="your@email.com" />
+                <label class="field-label">Пароль</label>
+                <input id="auth-reg-pass" class="text-input" type="password" placeholder="Минимум 6 символов" />
+                <button class="btn-start" style="width:100%" onclick="authRegister()">✉ Зарегистрироваться</button>
+            </div>
+
+            <p id="auth-error" class="auth-msg auth-msg-error"></p>
+            <p id="auth-success" class="auth-msg auth-msg-success"></p>
+        </div>
+    </div>
+
+    <!-- ГЛАВНЫЙ ЭКРАН -->
+    <div id="screen-home" class="screen">
+        <div class="home-content">
+            <div class="logo">🏒</div>
+            <h1 class="title">BALLISTIX</h1>
+            <p class="subtitle">Защищай ворота. Атакуй врагов.</p>
+            <div class="lives-info">
+                <span>⏱ 3 минуты</span>
+                <span>⚡ Шар ускоряется</span>
+                <span>⚽ Больше голов — победа</span>
+            </div>
+            <div class="mode-buttons">
+                <button class="btn-start" onclick="startGame('1v3')">▶ Одиночная игра</button>
+                <button class="btn-start btn-multi" onclick="openMulti()">🌐 Мультиплеер</button>
+            </div>
+            <div class="controls-info">
+                <p>⬆⬇⬅➡ — движение &nbsp;|&nbsp; SPACE — суперудар</p>
+            </div>
+            <button class="auth-logout-btn" onclick="authLogout()">Выйти из аккаунта</button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН МУЛЬТИПЛЕЕРА — СПИСОК ЛОББИ -->
+    <div id="screen-multi" class="screen">
+        <div class="multi-wrap">
+
+            <!-- Список лобби -->
+            <div class="multi-list-col">
+                <h2 class="multi-title">🌐 Лобби</h2>
+                <div id="rooms-list" class="rooms-list">
+                    <p class="rooms-empty">Нет активных лобби</p>
+                </div>
+            </div>
+
+            <!-- Создать лобби -->
+            <div class="multi-create-col">
+                <div class="create-form">
+                    <label class="field-label">Ваше имя</label>
+                    <input id="input-name" class="text-input" type="text" maxlength="12" placeholder="Введите имя..." />
+
+                    <label class="field-label">Название лобби</label>
+                    <input id="input-lobby-name" class="text-input" type="text" maxlength="16" placeholder="Моё лобби..." />
+
+                    <label class="field-label">Пароль (необязательно)</label>
+                    <input id="input-lobby-pass" class="text-input" type="password" maxlength="8" placeholder="——" />
+
+                    <button class="btn-start" onclick="lobbyCreate()">＋ Создать лобби</button>
+                </div>
+                <p id="multi-error" class="multi-error"></p>
+                <button class="btn-home" onclick="showScreen('screen-home')">← Назад</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ЭКРАН ЛОББИ -->
+    <div id="screen-lobby" class="screen">
+        <div class="lobby-screen">
+
+            <div class="lobby-header">
+                <h2 id="lobby-title" class="lobby-title">Лобби</h2>
+                <button class="btn-copy" onclick="lobbyCodeCopy()">📋 Скопировать код</button>
+            </div>
+
+            <!-- Выбор режима -->
+            <div class="mode-select">
+                <button class="btn-mode active" id="mode-btn-2v2" onclick="setLobbyMode('2v2')">⚔️ Команды 2×2</button>
+                <button class="btn-mode" id="mode-btn-ffa" onclick="setLobbyMode('ffa')">🎯 Каждый сам за себя</button>
+            </div>
+
+            <div class="lobby-teams">
+
+                <div class="team-column" id="team-col-a">
+                    <h3 class="team-title" id="team-label-a">🔵 КОМАНДА А</h3>
+                    <div id="slot-bottom" class="slot" onclick="lobbyClaimSlot('bottom')">
+                        <span class="slot-player" id="slot-player-bottom">Свободно</span>
+                    </div>
+                    <div id="slot-top" class="slot" onclick="lobbyClaimSlot('top')">
+                        <span class="slot-player" id="slot-player-top">Свободно</span>
+                    </div>
+                </div>
+
+                <div class="team-vs">
+                    <span class="vs-text" id="vs-label">VS</span>
+                </div>
+
+                <div class="team-column" id="team-col-b">
+                    <h3 class="team-title" id="team-label-b">🔴 КОМАНДА Б</h3>
+                    <div id="slot-left" class="slot" onclick="lobbyClaimSlot('left')">
+                        <span class="slot-player" id="slot-player-left">Свободно</span>
+                    </div>
+                    <div id="slot-right" class="slot" onclick="lobbyClaimSlot('right')">
+                        <span class="slot-player" id="slot-player-right">Свободно</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="lobby-footer">
+                <p id="lobby-status" class="lobby-status">Ожидание игроков... (0/4)</p>
+                <button id="btn-start-game" class="btn-start" onclick="lobbyStartGame()" style="display:none">▶ НАЧАТЬ ИГРУ</button>
+                <button class="btn-home" onclick="lobbyLeave()">← Выйти</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ЭКРАН ИГРЫ -->
+    <div id="screen-game" class="screen">
+        <canvas id="gameCanvas"></canvas>
+        <div id="hud">
+            <div class="player-hud" id="hud-0">
+                <span class="hud-name">ТЫ</span>
+                <span class="hud-lives" id="lives-0">❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</span>
+            </div>
+            <div class="player-hud" id="hud-1">
+                <span class="hud-name">БОТ 1</span>
+                <span class="hud-lives" id="lives-1">❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</span>
+            </div>
+            <div class="player-hud" id="hud-2">
+                <span class="hud-name">БОТ 2</span>
+                <span class="hud-lives" id="lives-2">❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</span>
+            </div>
+            <div class="player-hud" id="hud-3">
+                <span class="hud-name">БОТ 3</span>
+                <span class="hud-lives" id="lives-3">❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</span>
+            </div>
+        </div>
+        <button class="btn-pause" onclick="goHome()">✕</button>
+    </div>
+
+    <!-- ЭКРАН ПОБЕДЫ/ПОРАЖЕНИЯ -->
+    <div id="screen-end" class="screen">
+        <div class="end-content">
+            <div class="end-emoji" id="end-emoji">🏆</div>
+            <h2 id="end-title">Победа!</h2>
+            <p id="end-subtitle">Ты последний выживший!</p>
+            <button class="btn-start" onclick="startGame()">▶ ЕЩЁ РАЗ</button>
+            <button class="btn-home" onclick="goHome()">На главную</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <script src="game.js?v=32"></script>
+    <script src="lobby.js?v=32"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js');
+        }
+    </script>
+</body>
+</html>

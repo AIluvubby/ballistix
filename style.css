@@ -1,0 +1,704 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Arial Rounded MT Bold', sans-serif;
+}
+
+body {
+    background: #0f0c1d;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Фоновая сетка — лёгкий намёк на стадион */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(120, 60, 200, 0.18) 0%, transparent 65%),
+        radial-gradient(ellipse at 50% 100%, rgba(249, 115, 22, 0.10) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.screen {
+    display: none;
+    position: relative;
+    z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* ===== ГЛАВНЫЙ ЭКРАН ===== */
+.home-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    padding: 20px;
+}
+
+.logo {
+    font-size: 88px;
+    filter: drop-shadow(0 0 24px rgba(249,115,22,0.7));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%       { transform: translateY(-14px) rotate(3deg); }
+}
+
+.title {
+    font-size: 72px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 10px;
+    text-shadow:
+        0 0 30px rgba(249,115,22,0.8),
+        0 0 60px rgba(249,115,22,0.4),
+        0 4px 0 #7c2d12;
+    line-height: 1;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.lives-info {
+    display: flex;
+    gap: 20px;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 12px 24px;
+}
+
+/* ===== КНОПКИ — ПУХЛЫЙ 3D СТИЛЬ ===== */
+.btn-start {
+    padding: 16px 52px;
+    background: linear-gradient(to bottom, #fb923c 0%, #ea580c 70%, #c2410c 100%);
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 900;
+    cursor: pointer;
+    letter-spacing: 3px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    box-shadow:
+        0 6px 0 #7c2d12,
+        0 8px 16px rgba(249,115,22,0.35);
+    transition: transform 0.08s, box-shadow 0.08s;
+    position: relative;
+    top: 0;
+}
+
+.btn-start:hover {
+    box-shadow:
+        0 6px 0 #7c2d12,
+        0 10px 24px rgba(249,115,22,0.5);
+    filter: brightness(1.08);
+}
+
+.btn-start:active {
+    transform: translateY(4px);
+    box-shadow:
+        0 2px 0 #7c2d12,
+        0 4px 8px rgba(249,115,22,0.3);
+}
+
+.btn-multi {
+    background: linear-gradient(to bottom, #818cf8 0%, #6366f1 70%, #4338ca 100%);
+    box-shadow:
+        0 6px 0 #1e1b4b,
+        0 8px 16px rgba(99,102,241,0.35);
+}
+
+.btn-multi:hover {
+    box-shadow:
+        0 6px 0 #1e1b4b,
+        0 10px 24px rgba(99,102,241,0.5);
+}
+
+.btn-multi:active {
+    box-shadow:
+        0 2px 0 #1e1b4b,
+        0 4px 8px rgba(99,102,241,0.3);
+}
+
+.mode-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.controls-info {
+    color: rgba(255,255,255,0.3);
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+/* ===== КНОПКА НАЗАД ===== */
+.btn-home {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.6);
+    padding: 11px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+}
+
+.btn-home:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
+}
+
+/* ===== ЭКРАН ИГРЫ ===== */
+#screen-game {
+    position: relative;
+    background: #0f0c1d;
+}
+
+#gameCanvas {
+    display: block;
+}
+
+#hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 16px;
+    background: rgba(15,12,29,0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    z-index: 10;
+}
+
+.player-hud {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.hud-name {
+    color: rgba(255,255,255,0.85);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.hud-lives {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+}
+
+.btn-pause {
+    position: fixed;
+    top: 10px;
+    right: 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.15s;
+}
+
+.btn-pause:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+/* ===== ЭКРАН КОНЦА ===== */
+.end-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    padding: 40px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px;
+    backdrop-filter: blur(12px);
+}
+
+.end-emoji {
+    font-size: 96px;
+    filter: drop-shadow(0 0 20px rgba(249,115,22,0.6));
+    animation: bounce 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes bounce {
+    0%   { transform: scale(0) rotate(-15deg); }
+    60%  { transform: scale(1.25) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+#end-title {
+    font-size: 52px;
+    color: #fff;
+    font-weight: 900;
+    letter-spacing: 4px;
+    text-shadow: 0 0 30px rgba(249,115,22,0.6);
+}
+
+#end-subtitle {
+    font-size: 18px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 1px;
+}
+
+/* ===== ПОЛЯ ВВОДА ===== */
+.field-label {
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.text-input {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 13px 18px;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+    letter-spacing: 1px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.text-input:focus {
+    border-color: rgba(249,115,22,0.6);
+    background: rgba(255,255,255,0.09);
+}
+
+.text-input::placeholder {
+    color: rgba(255,255,255,0.2);
+}
+
+/* ===== МУЛЬТИПЛЕЕР ===== */
+.multi-wrap {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    max-width: 860px;
+    align-items: stretch;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 0;
+}
+
+.multi-list-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-right: 32px;
+    border-right: 1px solid rgba(255,255,255,0.07);
+}
+
+.multi-create-col {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-left: 32px;
+    justify-content: center;
+}
+
+.multi-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Список комнат */
+.rooms-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 420px;
+}
+
+.rooms-empty {
+    color: rgba(255,255,255,0.2);
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 20px 0;
+}
+
+.room-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.room-item:hover {
+    background: rgba(249,115,22,0.08);
+    border-color: rgba(249,115,22,0.35);
+    transform: translateX(3px);
+}
+
+.room-item-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.room-item-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.room-item-code {
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 3px;
+}
+
+.room-item-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.room-item-count {
+    font-size: 14px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.45);
+}
+
+.room-item-lock { font-size: 16px; }
+
+.multi-error {
+    color: #f87171;
+    font-size: 13px;
+    min-height: 18px;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.btn-multi-back {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.5);
+    padding: 11px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+/* ===== ЛОББИ ===== */
+.lobby-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    padding: 28px 20px;
+}
+
+.lobby-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.lobby-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.btn-copy {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.6);
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+}
+
+.btn-copy:hover {
+    background: rgba(249,115,22,0.1);
+    border-color: rgba(249,115,22,0.4);
+    color: #fb923c;
+}
+
+/* ===== ВЫБОР РЕЖИМА ===== */
+.mode-select {
+    display: flex;
+    gap: 10px;
+    background: rgba(255,255,255,0.04);
+    padding: 6px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.btn-mode {
+    padding: 10px 22px;
+    border-radius: 13px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.4);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.btn-mode:hover {
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.06);
+}
+
+.btn-mode.active {
+    background: linear-gradient(to bottom, #fb923c, #ea580c);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(249,115,22,0.4);
+}
+
+/* ===== СЛОТЫ ===== */
+.lobby-teams {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.team-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.team-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.team-vs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.vs-text {
+    font-size: 24px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: 4px;
+}
+
+.slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 124px;
+    height: 96px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.10);
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+}
+
+.slot:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.slot.taken {
+    border-color: rgba(52,211,153,0.45);
+    background: rgba(52,211,153,0.07);
+    cursor: default;
+    transform: none;
+}
+
+.slot.mine {
+    cursor: default;
+    transform: translateY(-3px);
+}
+
+.slot-player {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    max-width: 108px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.slot.taken .slot-player,
+.slot.mine .slot-player {
+    color: rgba(255,255,255,0.9);
+}
+
+/* ===== ЦВЕТА СЛОТОВ ===== */
+.slot-team-a { border-color: rgba(91,155,213,0.45) !important; }
+.slot-team-a:hover { background: rgba(91,155,213,0.1) !important; }
+.slot-team-a.mine { border-color: #5B9BD5 !important; box-shadow: 0 0 20px rgba(91,155,213,0.4) !important; }
+
+.slot-team-b { border-color: rgba(194,71,91,0.45) !important; }
+.slot-team-b:hover { background: rgba(194,71,91,0.1) !important; }
+.slot-team-b.mine { border-color: #C2475B !important; box-shadow: 0 0 20px rgba(194,71,91,0.4) !important; }
+
+.slot-ffa-0 { border-color: rgba(91,155,213,0.45) !important; }
+.slot-ffa-0.mine { border-color: #5B9BD5 !important; box-shadow: 0 0 20px rgba(91,155,213,0.4) !important; }
+.slot-ffa-1 { border-color: rgba(194,71,91,0.45) !important; }
+.slot-ffa-1.mine { border-color: #C2475B !important; box-shadow: 0 0 20px rgba(194,71,91,0.4) !important; }
+.slot-ffa-2 { border-color: rgba(52,211,153,0.45) !important; }
+.slot-ffa-2.mine { border-color: #34d399 !important; box-shadow: 0 0 20px rgba(52,211,153,0.4) !important; }
+.slot-ffa-3 { border-color: rgba(251,191,36,0.45) !important; }
+.slot-ffa-3.mine { border-color: #fbbf24 !important; box-shadow: 0 0 20px rgba(251,191,36,0.4) !important; }
+
+/* ===== ПОДВАЛ ЛОББИ ===== */
+.lobby-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.lobby-status {
+    font-size: 13px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* ===== МОБИЛЬНОЕ УПРАВЛЕНИЕ ===== */
+.btn-super {
+    display: none;
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: rgba(249,115,22,0.15);
+    border: 2px solid rgba(249,115,22,0.65);
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 30;
+    touch-action: none;
+    box-shadow: 0 0 24px rgba(249,115,22,0.35);
+    transition: background 0.1s;
+}
+
+.btn-super:active {
+    background: rgba(249,115,22,0.45);
+}
+
+@media (pointer: coarse) {
+    .btn-super { display: block; }
+    .controls-info { display: none; }
+}
+
+@media (max-width: 640px) {
+    .title { font-size: 48px; letter-spacing: 6px; }
+    .logo  { font-size: 64px; }
+    .multi-wrap {
+        flex-direction: column;
+        overflow-y: auto;
+        align-items: flex-start;
+        padding: 20px 16px;
+    }
+    .multi-list-col {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        padding-bottom: 20px;
+        width: 100%;
+    }
+    .multi-create-col {
+        padding-left: 0;
+        width: 100%;
+    }
+    .lobby-teams { gap: 12px; }
+    .slot { width: 96px; height: 80px; }
+    .vs-text { font-size: 18px; }
+}
