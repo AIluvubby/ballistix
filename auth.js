@@ -5,9 +5,12 @@ function initAuth() {
     firebase.auth().onAuthStateChanged(user => {
         if (user && user.emailVerified) {
             window.myName = user.displayName || user.email.split('@')[0];
+            myUid = user.uid;
+            sessionStorage.setItem('ballistix_uid', user.uid);
             const nameEl = document.getElementById('home-player-name');
             if (nameEl) nameEl.textContent = window.myName;
             showScreen('screen-home');
+            if (typeof loadUserProfile === 'function') loadUserProfile();
         } else {
             showScreen('screen-auth');
         }

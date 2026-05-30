@@ -769,9 +769,11 @@ function endGameByTimer() {
         if (a > b) {
             emoji.textContent = "🏆"; title.textContent = "ПОБЕДА!";
             sub.textContent = `Ваша команда: ${a}:${b} 🔵`;
+            if (typeof updateRatingsAfterGame === 'function' && typeof rankedTeams !== 'undefined' && rankedTeams) updateRatingsAfterGame(0);
         } else if (b > a) {
             emoji.textContent = "💔"; title.textContent = "ПОРАЖЕНИЕ";
-            sub.textContent = `Боты: ${b}:${a} 🔴`;
+            sub.textContent = `Противники: ${b}:${a} 🔴`;
+            if (typeof updateRatingsAfterGame === 'function' && typeof rankedTeams !== 'undefined' && rankedTeams) updateRatingsAfterGame(1);
         } else {
             emoji.textContent = "🤝"; title.textContent = "НИЧЬЯ!";
             sub.textContent = `${a}:${b}`;

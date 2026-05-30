@@ -774,6 +774,216 @@ body::before {
     margin-top: 8px;
 }
 
+/* ===== РЕЙТИНГ НА ГЛАВНОМ ===== */
+.home-rating {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fbbf24;
+    letter-spacing: 2px;
+    text-shadow: 0 0 12px rgba(251,191,36,0.5);
+}
+
+/* ===== КНОПКА РЕЙТИНГОВОГО МАТЧА ===== */
+.btn-ranked {
+    background: linear-gradient(to bottom, #fbbf24 0%, #f59e0b 70%, #d97706 100%);
+    box-shadow:
+        0 6px 0 #92400e,
+        0 8px 16px rgba(245,158,11,0.35);
+}
+
+.btn-ranked:hover {
+    box-shadow:
+        0 6px 0 #92400e,
+        0 10px 24px rgba(245,158,11,0.5);
+}
+
+.btn-ranked:active {
+    box-shadow:
+        0 2px 0 #92400e,
+        0 4px 8px rgba(245,158,11,0.3);
+}
+
+/* ===== КНОПКА ТАБЛИЦЫ ЛИДЕРОВ ===== */
+.btn-leaderboard {
+    background: none;
+    border: 1px solid rgba(251,191,36,0.3);
+    color: rgba(251,191,36,0.7);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+}
+
+.btn-leaderboard:hover {
+    background: rgba(251,191,36,0.08);
+    border-color: rgba(251,191,36,0.6);
+    color: #fbbf24;
+}
+
+/* ===== ЭКРАН МАТЧМЕЙКИНГА ===== */
+.mm-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 28px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px;
+    backdrop-filter: blur(12px);
+}
+
+.mm-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.mm-subtitle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 2px;
+    animation: pulse-opacity 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-opacity {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 1; }
+}
+
+.mm-counter {
+    font-size: 48px;
+    font-weight: 900;
+    color: #fbbf24;
+    text-shadow: 0 0 20px rgba(251,191,36,0.5);
+    letter-spacing: 4px;
+}
+
+.mm-players {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.mm-player {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.mm-empty {
+    color: rgba(255,255,255,0.2);
+    border-style: dashed;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.mm-player-rating {
+    font-size: 12px;
+    color: #fbbf24;
+    font-weight: 700;
+}
+
+/* ===== ТАБЛИЦА ЛИДЕРОВ ===== */
+.lb-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 500px;
+    padding: 36px 28px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px;
+    backdrop-filter: blur(12px);
+    max-height: 90vh;
+}
+
+.lb-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.lb-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    overflow-y: auto;
+    max-height: 55vh;
+}
+
+.lb-loading {
+    color: rgba(255,255,255,0.3);
+    font-size: 14px;
+    text-align: center;
+    padding: 20px 0;
+    letter-spacing: 1px;
+}
+
+.lb-row {
+    display: grid;
+    grid-template-columns: 40px 1fr auto auto;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 14px;
+}
+
+.lb-row.lb-me {
+    background: rgba(251,191,36,0.08);
+    border-color: rgba(251,191,36,0.35);
+}
+
+.lb-rank {
+    font-size: 18px;
+    text-align: center;
+}
+
+.lb-name {
+    font-weight: 800;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lb-rating {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fbbf24;
+    white-space: nowrap;
+}
+
+.lb-record {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+}
+
 @media (pointer: coarse) {
     .btn-super { display: block; }
     .controls-info { display: none; }

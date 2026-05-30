@@ -54,6 +54,7 @@
             <div class="logo">🏒</div>
             <h1 class="title">BALLISTIX</h1>
             <p class="subtitle">Привет, <span id="home-player-name"></span>!</p>
+            <p id="home-rating" class="home-rating"></p>
             <div class="lives-info">
                 <span>⏱ 3 минуты</span>
                 <span>⚡ Шар ускоряется</span>
@@ -62,7 +63,9 @@
             <div class="mode-buttons">
                 <button class="btn-start" onclick="startGame('1v3')">▶ Одиночная игра</button>
                 <button class="btn-start btn-multi" onclick="openMulti()">🌐 Мультиплеер</button>
+                <button class="btn-start btn-ranked" onclick="joinQueue()">⚔️ Рейтинговый матч</button>
             </div>
+            <button class="btn-leaderboard" onclick="showLeaderboard()">🏆 Таблица лидеров</button>
             <div class="controls-info">
                 <p>⬆⬇⬅➡ — движение &nbsp;|&nbsp; SPACE — суперудар</p>
             </div>
@@ -180,6 +183,26 @@
         <button class="btn-pause" onclick="goHome()">✕</button>
     </div>
 
+    <!-- ЭКРАН ПОИСКА МАТЧА -->
+    <div id="screen-matchmaking" class="screen">
+        <div class="mm-card">
+            <div class="mm-title">⚔️ Поиск матча</div>
+            <p class="mm-subtitle">Подбираем соперников...</p>
+            <div class="mm-counter" id="mm-count">0 / 4</div>
+            <div id="mm-players" class="mm-players"></div>
+            <button class="btn-home" onclick="leaveQueue()">← Отмена</button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН ТАБЛИЦЫ ЛИДЕРОВ -->
+    <div id="screen-leaderboard" class="screen">
+        <div class="lb-card">
+            <h2 class="lb-title">🏆 Таблица лидеров</h2>
+            <div id="lb-list" class="lb-list"></div>
+            <button class="btn-home" onclick="showScreen('screen-home')">← Назад</button>
+        </div>
+    </div>
+
     <!-- ЭКРАН ПОБЕДЫ/ПОРАЖЕНИЯ -->
     <div id="screen-end" class="screen">
         <div class="end-content">
@@ -196,9 +219,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <script src="game.js?v=34"></script>
-    <script src="lobby.js?v=34"></script>
-    <script src="auth.js?v=34"></script>
+    <script src="game.js?v=35"></script>
+    <script src="lobby.js?v=35"></script>
+    <script src="auth.js?v=35"></script>
+    <script src="matchmaking.js?v=35"></script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js');
