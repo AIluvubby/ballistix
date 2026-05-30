@@ -673,6 +673,14 @@ body::before {
     background: rgba(249,115,22,0.45);
 }
 
+.copyright {
+    color: rgba(255,255,255,0.18);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-align: center;
+    margin-top: 8px;
+}
+
 @media (pointer: coarse) {
     .btn-super { display: block; }
     .controls-info { display: none; }
