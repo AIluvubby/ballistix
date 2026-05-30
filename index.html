@@ -65,7 +65,13 @@
                 <button class="btn-start btn-multi" onclick="openMulti()">🌐 Мультиплеер</button>
                 <button class="btn-start btn-ranked" onclick="joinQueue()">⚔️ Рейтинговый матч</button>
             </div>
-            <button class="btn-leaderboard" onclick="showLeaderboard()">🏆 Таблица лидеров</button>
+            <div class="home-bottom-btns">
+                <button class="btn-leaderboard" onclick="showLeaderboard()">🏆 Таблица лидеров</button>
+                <button class="btn-leaderboard btn-friends-home" onclick="showFriends()">
+                    👥 Друзья
+                    <span id="friends-badge" class="friends-badge" style="display:none"></span>
+                </button>
+            </div>
             <div class="controls-info">
                 <p>⬆⬇⬅➡ — движение &nbsp;|&nbsp; SPACE — суперудар</p>
             </div>
@@ -194,6 +200,31 @@
         </div>
     </div>
 
+    <!-- ЭКРАН ДРУЗЕЙ -->
+    <div id="screen-friends" class="screen">
+        <div class="friends-card">
+            <h2 class="lb-title">👥 Друзья</h2>
+
+            <!-- Поиск -->
+            <div class="friends-search-row">
+                <input id="friends-search-input" class="text-input" type="text" placeholder="Введите имя игрока..." maxlength="16"
+                    onkeydown="if(event.key==='Enter') searchFriend()" />
+                <button class="btn-friend-add" onclick="searchFriend()">Найти</button>
+            </div>
+            <div id="friends-search-results"></div>
+
+            <!-- Входящие запросы -->
+            <div id="friends-requests"></div>
+
+            <!-- Список друзей -->
+            <div id="friends-list" class="friends-list">
+                <p class="friends-empty">Загрузка...</p>
+            </div>
+
+            <button class="btn-home" onclick="showScreen('screen-home')">← Назад</button>
+        </div>
+    </div>
+
     <!-- ЭКРАН ТАБЛИЦЫ ЛИДЕРОВ -->
     <div id="screen-leaderboard" class="screen">
         <div class="lb-card">
@@ -219,10 +250,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <script src="game.js?v=38"></script>
-    <script src="lobby.js?v=37"></script>
-    <script src="auth.js?v=37"></script>
-    <script src="matchmaking.js?v=37"></script>
+    <script src="game.js?v=39"></script>
+    <script src="lobby.js?v=39"></script>
+    <script src="auth.js?v=39"></script>
+    <script src="matchmaking.js?v=39"></script>
+    <script src="friends.js?v=39"></script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js');

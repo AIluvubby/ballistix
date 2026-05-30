@@ -984,6 +984,207 @@ body::before {
     white-space: nowrap;
 }
 
+/* ===== КНОПКИ ВНИЗУ ГЛАВНОГО ЭКРАНА ===== */
+.home-bottom-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-friends-home {
+    position: relative;
+}
+
+/* ===== БЕЙДЖ УВЕДОМЛЕНИЙ ===== */
+.friends-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #f87171;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== ЭКРАН ДРУЗЕЙ ===== */
+.friends-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 480px;
+    padding: 36px 28px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px;
+    backdrop-filter: blur(12px);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.friends-search-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.friends-search-row .text-input {
+    flex: 1;
+}
+
+.friends-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-height: 35vh;
+    overflow-y: auto;
+}
+
+.friends-empty {
+    color: rgba(255,255,255,0.25);
+    font-size: 13px;
+    text-align: center;
+    padding: 12px 0;
+    letter-spacing: 1px;
+}
+
+.requests-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    width: 100%;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.friend-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    width: 100%;
+}
+
+.request-row {
+    border-color: rgba(251,191,36,0.2);
+    background: rgba(251,191,36,0.05);
+}
+
+.friend-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.friend-rating-sm {
+    font-size: 12px;
+    color: #fbbf24;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.friend-online-text {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+}
+
+.friend-online-text.online {
+    color: #34d399;
+}
+
+.friend-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.friend-status-dot.online  { background: #34d399; box-shadow: 0 0 6px #34d399; }
+.friend-status-dot.offline { background: rgba(255,255,255,0.2); }
+
+.friends-tag {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    white-space: nowrap;
+}
+
+.btn-friend-add {
+    background: linear-gradient(to bottom, #34d399, #059669);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 8px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: filter 0.15s;
+}
+
+.btn-friend-add:hover { filter: brightness(1.1); }
+
+.btn-friend-accept {
+    background: linear-gradient(to bottom, #34d399, #059669);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-friend-decline,
+.btn-friend-remove {
+    background: rgba(248,113,113,0.1);
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 8px;
+    color: #f87171;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-friend-decline:hover,
+.btn-friend-remove:hover {
+    background: rgba(248,113,113,0.2);
+}
+
+#friends-search-results {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#friends-requests {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 @media (pointer: coarse) {
     .btn-super { display: block; }
     .controls-info { display: none; }

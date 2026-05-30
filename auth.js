@@ -11,6 +11,8 @@ function initAuth() {
             if (nameEl) nameEl.textContent = window.myName;
             showScreen('screen-home');
             if (typeof loadUserProfile === 'function') loadUserProfile();
+            if (typeof setOnlinePresence === 'function') setOnlinePresence();
+            if (typeof listenForFriendsBadge === 'function') listenForFriendsBadge();
         } else {
             showScreen('screen-auth');
         }
